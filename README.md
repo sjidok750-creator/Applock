@@ -30,7 +30,28 @@ Android Studio에서 열고 실행하거나, CLI에서:
 
 빌드된 APK는 `app/build/outputs/apk/debug/` 에 생성됩니다.
 
-> 처음 한 번은 `gradle wrapper`로 wrapper를 생성하거나, Android Studio가 자동으로 동기화하도록 두세요.
+## 배포
+
+### 랜딩 페이지 (GitHub Pages)
+
+`docs/` 폴더에 정적 사이트가 들어있고, `main` 브랜치에 푸시되면 `.github/workflows/pages.yml`이 자동 배포합니다.
+
+**최초 1회 설정**: 저장소 Settings → Pages → Build and deployment → **Source: GitHub Actions** 로 변경.
+
+배포 후 URL: `https://sjidok750-creator.github.io/applock/`
+
+### APK 자동 빌드 & 릴리스
+
+`v` 로 시작하는 태그를 푸시하면 `.github/workflows/release-apk.yml`이 APK를 빌드하고 GitHub Releases에 첨부합니다.
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+릴리스 후 다운로드 URL: `https://github.com/sjidok750-creator/applock/releases/latest/download/applock.apk`
+
+랜딩 페이지의 "APK 다운로드" 버튼이 이 URL을 가리킵니다.
 
 ## 제한사항 (MVP)
 
