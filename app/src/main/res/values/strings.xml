@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AppLock</string>
+    <string name="notif_channel_name">AppLock 보호</string>
+    <string name="notif_title">AppLock 작동 중</string>
+    <string name="notif_text">선택한 앱을 PIN으로 보호하고 있어요</string>
+</resources>
