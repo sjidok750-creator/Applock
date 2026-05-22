@@ -75,23 +75,24 @@ class AppLockService : Service() {
                 event.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND
             ) {
                 latestForeground = event.packageName
-            } else if (event.eventType == UsageEvents.Event.ACTIVITY_PAUSED ||
-                event.eventType == UsageEvents.Event.MOVE_TO_BACKGROUND
-            ) {
-                if (lockedStore.isLocked(event.packageName)) {
-                    UnlockTracker.clear(event.packageName)
-                }
             }
         }
+
         val current = latestForeground ?: return
+        if (current in IGNORED_PACKAGES) return
         if (current == lastForegroundPackage) return
+
         lastForegroundPackage = current
 
         if (current == packageName) return
-        if (!lockedStore.isLocked(current)) return
-        if (UnlockTracker.isWithinGrace(current)) return
 
-        launchLockScreen(current)
+        if (!UnlockTracker.isAuthorized(current)) {
+            UnlockTracker.revoke()
+        }
+
+        if (lockedStore.isLocked(current) && !UnlockTracker.isAuthorized(current)) {
+            launchLockScreen(current)
+        }
     }
 
     private fun launchLockScreen(targetPackage: String) {
@@ -135,8 +136,13 @@ class AppLockService : Service() {
     companion object {
         private const val NOTIF_ID = 1001
         private const val CHANNEL_ID = "applock_service"
-        private const val POLL_MS = 400L
+        private const val POLL_MS = 300L
         private const val QUERY_WINDOW_MS = 2_000L
+
+        private val IGNORED_PACKAGES = setOf(
+            "android",
+            "com.android.systemui",
+        )
 
         fun start(context: Context) {
             val intent = Intent(context, AppLockService::class.java)

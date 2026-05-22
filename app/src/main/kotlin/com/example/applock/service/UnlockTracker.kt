@@ -2,22 +2,17 @@ package com.example.applock.service
 
 object UnlockTracker {
 
-    private const val GRACE_MS = 5 * 60 * 1000L
-    private val unlockedAt = mutableMapOf<String, Long>()
+    @Volatile
+    private var authorized: String? = null
 
-    @Synchronized
-    fun markUnlocked(packageName: String) {
-        unlockedAt[packageName] = System.currentTimeMillis()
+    fun authorize(packageName: String) {
+        authorized = packageName
     }
 
-    @Synchronized
-    fun isWithinGrace(packageName: String): Boolean {
-        val ts = unlockedAt[packageName] ?: return false
-        return System.currentTimeMillis() - ts < GRACE_MS
-    }
+    fun isAuthorized(packageName: String): Boolean =
+        authorized == packageName
 
-    @Synchronized
-    fun clear(packageName: String) {
-        unlockedAt.remove(packageName)
+    fun revoke() {
+        authorized = null
     }
 }

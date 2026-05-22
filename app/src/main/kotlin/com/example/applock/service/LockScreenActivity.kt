@@ -13,6 +13,8 @@ import com.example.applock.ui.theme.ApplockTheme
 class LockScreenActivity : ComponentActivity() {
 
     private lateinit var pinStore: PinStore
+
+    @Volatile
     private var targetPackage: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +41,7 @@ class LockScreenActivity : ComponentActivity() {
                     subtitle = "PIN을 입력하세요",
                     onPinEntered = { pin ->
                         if (pinStore.verify(pin)) {
-                            UnlockTracker.markUnlocked(targetPackage)
+                            UnlockTracker.authorize(targetPackage)
                             finish()
                             true
                         } else {
@@ -49,6 +51,12 @@ class LockScreenActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        intent.getStringExtra(EXTRA_PACKAGE)?.let { targetPackage = it }
     }
 
     private fun goHome() {
