@@ -11,4 +11,6 @@ local.properties
 **/build/
 *.apk
 *.aab
-*.keystore
+# Allow committing the debug keystore so APK signing is stable across builds.
+# Real release keystores should NOT be committed.
+!app/debug.keystore
