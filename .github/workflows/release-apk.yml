@@ -2,8 +2,8 @@ name: Build & Release APK
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -42,9 +42,19 @@ jobs:
           name: applock-apk
           path: out/applock.apk
 
-      - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Create or update release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v0.1.0
+          name: AppLock v0.1.0
           files: out/applock.apk
-          generate_release_notes: true
+          body: |
+            ## AppLock v0.1.0
+
+            Auto-built debug APK. Download `applock.apk` and install on Android.
+
+            **Installation**
+            1. Download `applock.apk` below
+            2. Open the APK on your Android device
+            3. Allow installation from unknown sources if prompted
+            4. Follow the in-app PIN setup
